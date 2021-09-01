@@ -22,7 +22,7 @@
     </UserControl.Resources>
     <Grid>
         <map:Map x:Name="map" ZoomLevel="{Binding Zoom}" MaxZoomLevel="20" MinZoomLevel="4" Center="{Binding MapCenter}"
-                 TileLayer="{Binding MapResource}" IsMouseZoomEnabled="True" IsMouseMoveEnabled="{Binding IsMouseMoveEnable}"
+                 TileLayer="{Binding MapResource}" IsMouseZoomEnabled="True" IsMouseMoveEnabled="{Binding IsMouseMoveEnable, Mode=TwoWay}"
                  ManipulationInertiaStarting="MapManipulationInertiaStarting" 
                  MouseLeftButtonDown="map_MouseLeftButtonDown" MouseMove="map_MouseMove" MouseUp="map_MouseUp">
             <map:MapScale Margin="4" Opacity="0.8" HorizontalAlignment="Left" Background="Transparent"/>
@@ -31,7 +31,5 @@
             <map:MapItemsControl ItemsSource="{Binding Rectangles}"
                                  ItemTemplate="{StaticResource RectangleItemTemplate}"/>
         </map:Map>
-        <TextBlock Text="{Binding MouseMovePosition,Converter={StaticResource WGS84Converter}}" Padding="5" Foreground="Black" Opacity="0.5" Background="WhiteSmoke" HorizontalAlignment="Center"  VerticalAlignment="Bottom"/>
-
     </Grid>
 </UserControl>

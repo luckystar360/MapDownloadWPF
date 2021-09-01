@@ -22,11 +22,9 @@ namespace MapDownloader.Views
     /// </summary>
     public partial class PolygonInfoPanel : UserControl
     {
-        MainViewModel _mainViewModel = App.ServiceProvider.GetRequiredService<MainViewModel>();
         public PolygonInfoPanel()
         {
             InitializeComponent();
-            this.DataContext = _mainViewModel;
         }
     }
 }

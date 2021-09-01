@@ -2,6 +2,7 @@
 using MapDownloader.Enums;
 using MapDownloader.Models;
 using MapDownloader.Services.Commands;
+using MapDownloader.Views;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using System;
@@ -11,6 +12,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Controls;
 
 namespace MapDownloader.ViewModels
 {
@@ -20,6 +22,9 @@ namespace MapDownloader.ViewModels
         public MapViewModel MapViewModel { get { return _mapViewModel; } }
         private readonly AppSettings _settings;
         public ObservableCollection<TileLayer> TileLayers { get; set; }
+        public ObservableCollection<int> ListLayerIndex { get; set; }
+        public Dictionary<string, UserControl> ListRightPanels = new Dictionary<string, UserControl>();
+
 
         private TileLayer _selectedTileLayer;
         public TileLayer SelectedTileLayer
@@ -39,13 +44,23 @@ namespace MapDownloader.ViewModels
             }
         }
 
-        private Visibility _isShowNewPolygonPanel;
-        public Visibility IsShowNewPolygonPanel
+        private bool _isDownloading = false;
+        public bool IsDownloading
         {
-            get { return _isShowNewPolygonPanel; }
+            get { return _isDownloading; }
             set
             {
-                SetProperty(ref _isShowNewPolygonPanel, value);
+                SetProperty(ref _isDownloading, value);
+            }
+        }
+
+        private int _percentDownloading = 0;
+        public int PercentDownloading
+        {
+            get { return _percentDownloading; }
+            set
+            {
+                SetProperty(ref _percentDownloading, value);
             }
         }
 
@@ -56,30 +71,108 @@ namespace MapDownloader.ViewModels
             set
             {
                 SetProperty(ref _appMode, value);
-                if (_appMode == AppMode.Normal)
+                switch (_appMode)
                 {
-                    IsShowNewPolygonPanel = Visibility.Hidden;
-                    _mapViewModel.MapMode = MapMode.MoveMode;
-                }
-                else
-                {
-                    IsShowNewPolygonPanel = Visibility.Visible;
-                    _mapViewModel.MapMode = MapMode.SelectMode;
+                    case AppMode.Normal:
+                        _mapViewModel.MapMode = MapMode.MoveMode;
+                        break;
+                    case AppMode.NewPolygon:
+                        _mapViewModel.MapMode = MapMode.SelectMode;
+                        RightPanelItem = ListRightPanels["InfoPanel"];
+                        break;
+                    case AppMode.DownloadMap:
+                        _mapViewModel.MapMode = MapMode.MoveMode;
+                        RightPanelItem = ListRightPanels["DownloadPanel"];
+                        break;
+                    default:break;
                 }
             }
         }
 
+        private UserControl _rightPanelItem;
+        public UserControl RightPanelItem
+        {
+            get { return _rightPanelItem; }
+            set { SetProperty(ref _rightPanelItem, value); }
+        }
+
+
+        public RelayCommand AddNewRegionCommand { get; set; }
+        public RelayCommand DownloadRegionCommand { get; set; }
+        public RelayCommand DeleteRegionCommand { get; set; }
+        public RelayCommand SaveRegionCommand { get; set; }
+
+        public RelayCommand DownloadCommand { get; set; }
+        public RelayCommand CancelDownloadCommand { get; set; }
+
         public MainViewModel(IOptions<AppSettings> options)
         {
             _settings = options.Value;
+            ListRightPanels.Add("InfoPanel", new PolygonInfoPanel() as UserControl); //0
+            ListRightPanels.Add("DownloadPanel", new DownloadPanel() as UserControl); //1
+
+            //RightPanelItem = ListRightPanels[0];
             _mapViewModel = App.ServiceProvider.GetRequiredService<MapViewModel>();
             TileLayers = new ObservableCollection<TileLayer>();
             foreach (TileLayer item in _mapViewModel.ServerTileLayer.TileLayers)
             {
                 TileLayers.Add(item);
             }
-            AppMode = AppMode.NewPolygon;
+            AppMode = AppMode.Normal;
 
+            ListLayerIndex = new ObservableCollection<int> { 7,8,9,10,11,12,13,14,15,16,17};
+            //command register
+            AddNewRegionCommand = new RelayCommand(HandleAppModeChanged, (obj)=>{ return AppMode != AppMode.NewPolygon; });
+            DeleteRegionCommand = new RelayCommand(HandleAppModeChanged);
+            SaveRegionCommand = new RelayCommand(HandleAppModeChanged);
+            DownloadRegionCommand = new RelayCommand(HandleAppModeChanged, (obj) => { return AppMode != AppMode.DownloadMap; });
+            DownloadCommand = new RelayCommand(HandleDownloadCommand, (obj) => { return !_isDownloading; });
+            CancelDownloadCommand = new RelayCommand(HandleCancelDownloadCommand, (obj) => { return _isDownloading; });
+
+        }
+
+        /// <summary>
+        /// Handle add new polygon
+        /// </summary>
+        /// <param name="obj"></param>
+        private void HandleAppModeChanged(object obj)
+        {
+            if(obj is string)
+            {
+                switch(obj as string)
+                {
+                    case "AddNew":
+                        AppMode = AppMode.NewPolygon;
+                        break;
+                    case "Delete":
+                        _mapViewModel.ClearSelectedPolygon();
+                        break;
+                    case "Save":
+                        break;
+                    case "Download":
+                        AppMode = AppMode.DownloadMap;
+                        break;
+                    default:
+                        break;
+                }
+            }
+        }
+
+        /// <summary>
+        /// Handle button Download Click
+        /// </summary>
+        /// <param name="obj"></param>
+        private void HandleDownloadCommand(object obj)
+        {
+            IsDownloading = true;
+        }
+
+        /// <summary>
+        /// Handle button CancelDownload
+        /// </summary>
+        private void HandleCancelDownloadCommand(object obj)
+        {
+            IsDownloading = false;
         }
 
         public void UpdateSelectedMapSource()

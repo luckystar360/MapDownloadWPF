@@ -1,0 +1,86 @@
+﻿<UserControl x:Class="MapDownloader.Views.DownloadPanel"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:MapDownloader.Views"
+             xmlns:helpers="clr-namespace:MapDownloader.Helpers"
+             xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+             mc:Ignorable="d" 
+             d:DesignHeight="300" d:DesignWidth="250">
+
+    <UserControl.Resources>
+        <BooleanToVisibilityConverter x:Key="VisibleBooleanConvert" />
+    </UserControl.Resources>
+    <Grid Width="250" Height="300">
+        <GroupBox Header="Download" Background="#99FFFFFF" Style="{DynamicResource MaterialDesignGroupBox}"
+            Margin="0" materialDesign:ShadowAssist.ShadowDepth="Depth3">
+            <Grid>
+                <StackPanel Orientation="Vertical">
+                    <Border BorderThickness="1" BorderBrush="Gray" Padding="5">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition/>
+                                <RowDefinition/>
+                                <RowDefinition/>
+                                <RowDefinition/>
+                            </Grid.RowDefinitions>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition/>
+                            </Grid.ColumnDefinitions>
+                            <Label Content="Map Name:" Grid.Row="0" Grid.Column="0" Padding ="5"/>
+                            <TextBox ToolTip="Press MapFolder Name here" Text=""   Grid.Row="0" Grid.Column="1" Margin="10,0,0,0" />
+                            <Label Content="Signature:" Grid.Row="1" Grid.Column="0" Padding ="5"/>
+                            <TextBox ToolTip="Press signature of Map here&#x0a;Ex: esri_100-2" Text=""  Grid.Row="1" Grid.Column="1" Margin="10,0,0,0" />
+                            <Label Content="From Layer:" Grid.Row="2" Grid.Column="0" Padding ="5"/>
+                            <ComboBox materialDesign:HintAssist.Hint="Min Layer" ItemsSource="{Binding ListLayerIndex}"
+                              Grid.Row="2" Grid.Column="1" Width="75" HorizontalAlignment="Left" Margin="10,0,0,0" SelectedIndex="1">
+                                <ComboBox.ItemsPanel>
+                                    <ItemsPanelTemplate>
+                                        <VirtualizingStackPanel />
+                                    </ItemsPanelTemplate>
+                                </ComboBox.ItemsPanel>
+                            </ComboBox>
+                            <Label Content="To Layer:" Grid.Row="3" Grid.Column="0" Padding ="5"/>
+                            <ComboBox materialDesign:HintAssist.Hint="Max Layer" ItemsSource="{Binding ListLayerIndex}"
+                              Grid.Row="3" Grid.Column="1" Width="75" HorizontalAlignment="Left" Margin="10,0,0,0" SelectedIndex="2">
+                                <ComboBox.ItemsPanel>
+                                    <ItemsPanelTemplate>
+                                        <VirtualizingStackPanel />
+                                    </ItemsPanelTemplate>
+                                </ComboBox.ItemsPanel>
+                            </ComboBox>
+                        </Grid>
+                    </Border>
+                    <Grid Margin="0,10,0,0">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition/>
+                            <ColumnDefinition/>
+                        </Grid.ColumnDefinitions>
+                        <Button Style="{StaticResource MaterialDesignRaisedButton}" Command="{Binding DownloadCommand}" FontWeight="Regular" Padding="0"
+                        materialDesign:ButtonProgressAssist.Value="-1" materialDesign:ButtonProgressAssist.IsIndicatorVisible="{Binding IsDownloading}"
+                        materialDesign:ButtonProgressAssist.IsIndeterminate="True" Content="Download" Width="80"/>
+                        <Button Style="{StaticResource MaterialDesignRaisedButton}" Command="{Binding CancelDownloadCommand}" FontWeight="Regular" Padding="0"
+                        materialDesign:ButtonProgressAssist.Value="-1" materialDesign:ButtonProgressAssist.IsIndicatorVisible="False"
+                        materialDesign:ButtonProgressAssist.IsIndeterminate="True" Content="Cancel" Width="80" Grid.Column="1"/>
+                    </Grid>
+                   
+                </StackPanel>
+                <StackPanel Orientation="Vertical" VerticalAlignment="Bottom" >
+                    <Border BorderThickness="0,1,0,0" BorderBrush="Gray" >
+                        
+                    </Border>
+                    <StackPanel Orientation="Horizontal"  Margin="0,3,0,0">
+                        <TextBlock Text="Downloading... " Visibility="{Binding IsDownloading ,Converter={StaticResource VisibleBooleanConvert}}"/>
+                        <TextBlock Text="{Binding PercentDownloading}" Visibility="{Binding IsDownloading ,Converter={StaticResource VisibleBooleanConvert}}"/>
+                        <TextBlock Text="%" Visibility="{Binding IsDownloading ,Converter={StaticResource VisibleBooleanConvert}}"/>
+                    </StackPanel>
+                    <ProgressBar Value="{Binding PercentDownloading}" Margin="0,3,0,0" Height="5" Visibility="{Binding IsDownloading ,Converter={StaticResource VisibleBooleanConvert}}"/>
+                </StackPanel>
+
+            </Grid>
+
+        </GroupBox>
+    </Grid>
+</UserControl>

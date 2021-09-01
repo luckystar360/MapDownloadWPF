@@ -120,17 +120,23 @@ namespace MapDownloader.ViewModels
         public void UpdateSelectedPolygon(Location p1, Location p2)
         {
             int selectedRegionId = Rectangles.IndexOf(SelectedRegion);
-            //if (p1.Longitude < p2.Longitude && p1.Latitude > p2.Latitude)
-            {
                 SelectedRegion = new Rectangle() { Name = "SelectedRegion",
                     X1 = Math.Min(p1.Longitude, p2.Longitude), 
                     Y1 = Math.Max(p1.Latitude, p2.Latitude),
                     X2 = Math.Max(p1.Longitude, p2.Longitude),
                     Y2 = Math.Min(p1.Latitude, p2.Latitude)
                 };
-            }
-            Rectangles[selectedRegionId] = SelectedRegion;
+            if (selectedRegionId > 0)
+                Rectangles[selectedRegionId] = SelectedRegion;
+            else
+                Rectangles.Add(SelectedRegion);
             //Rectangles.Add(new Rectangle());
+        }
+
+        public void ClearSelectedPolygon()
+        {
+            int selectedRegionId = Rectangles.IndexOf(SelectedRegion);
+            Rectangles[selectedRegionId] = null;
         }
 
         public MapViewModel(IOptions<AppSettings> options)

@@ -5,7 +5,8 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:MapDownloader.Views"
         mc:Ignorable="d"
-        
+        xmlns:i="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity"
+        xmlns:ei="http://schemas.microsoft.com/expression/2010/interactions"
         xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
         TextElement.Foreground="{DynamicResource MaterialDesignBody}"
          TextElement.FontWeight="Regular"
@@ -16,6 +17,14 @@
          FontFamily="{DynamicResource MaterialDesignFont}"
         
         Title="MainWindow" Height="450" Width="800">
+    <Window.Resources>
+        <Storyboard x:Key="sbControlContent" AutoReverse="False">
+            <DoubleAnimation
+                                Storyboard.TargetName="rightContentControl"
+                                Storyboard.TargetProperty="Width"
+                                From="0" To="250" Duration="0:0:0.5" />
+        </Storyboard>
+    </Window.Resources>
     <Grid>
         
         <materialDesign:DrawerHost
@@ -80,13 +89,38 @@
             PlacementMode="TopAndAlignCentres" ToolTipService.Placement="Top" ToolTip="PopupBox, Style MaterialDesignMultiFloatingActionPopupBox"
             Opened="PopupBox_OnOpened" Closed="PopupBox_OnClosed" IsEnabled="{Binding DataContext.ControlsEnabled, RelativeSource={RelativeSource FindAncestor, AncestorType=Window}}" HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="0,0,9,9">
             <StackPanel>
-                <Button ToolTip="New Region" Content="{materialDesign:PackIcon Kind=OpenInNew, Size=25}" />
-                <Button ToolTip="Delete Region" Content="{materialDesign:PackIcon Kind=DeleteOutline, Size=25}"  />
-                <Button ToolTip="Save Region" Content="{materialDesign:PackIcon Kind=ContentSaveEditOutline, Size=25}"  />
-                <Button ToolTip="Download Map" Content="{materialDesign:PackIcon Kind=DownloadOutline, Size=25}"  />
+                <Button ToolTip="New Region" Command="{Binding AddNewRegionCommand}" CommandParameter="AddNew" Content="{materialDesign:PackIcon Kind=OpenInNew, Size=25}" />
+                <Button ToolTip="Delete Region" Command="{Binding DeleteRegionCommand}" CommandParameter="Delete" Content="{materialDesign:PackIcon Kind=DeleteOutline, Size=25}"  />
+                <Button ToolTip="Save Region" Command="{Binding SaveRegionCommand}" CommandParameter="Save" Content="{materialDesign:PackIcon Kind=ContentSaveEditOutline, Size=25}"  />
+                <Button ToolTip="Download Map" Command="{Binding DownloadRegionCommand}" CommandParameter="Download" Content="{materialDesign:PackIcon Kind=DownloadOutline, Size=25}"  />
             </StackPanel>
         </materialDesign:PopupBox>
 
-        <local:PolygonInfoPanel HorizontalAlignment="Right" VerticalAlignment="Top" Margin="5,60,5,5" Visibility="{Binding IsShowNewPolygonPanel}"/>
+        <!--<ContentControl x:Name="rightContentControl" Content="{Binding RightPanelItem}"  HorizontalAlignment="Right" VerticalAlignment="Top" Margin="5,60,5,5">
+            <ContentControl.Triggers>
+                <DataTrigger Binding="{Binding RightPanelItem}" Value="{x:Null}">
+                    
+                </DataTrigger>-->
+                <!--<EventTrigger RoutedEvent="KeyDown">
+                    <BeginStoryboard>
+                        <Storyboard AutoReverse="False">
+                            <DoubleAnimation
+                                Storyboard.TargetName="rightContentControl"
+                                Storyboard.TargetProperty="Width"
+                                From="0" To="250" Duration="0:0:0.5" />
+                        </Storyboard>
+                    </BeginStoryboard>
+                </EventTrigger>-->
+            <!--</ContentControl.Triggers>
+        </ContentControl>-->
+        <ContentControl x:Name="rightContentControl" Content="{Binding RightPanelItem, NotifyOnTargetUpdated=True}" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="5,60,5,5">
+            <i:Interaction.Triggers>
+                <i:EventTrigger EventName="TargetUpdated">
+                    <ei:ControlStoryboardAction Storyboard="{StaticResource sbControlContent}"/>
+                </i:EventTrigger>
+            </i:Interaction.Triggers>
+        </ContentControl>
+        <!--<local:PolygonInfoPanel HorizontalAlignment="Right" VerticalAlignment="Top" Margin="5,60,5,5" Visibility="{Binding IsShowNewPolygonPanel}"/>
+        <local:DownloadPanel HorizontalAlignment="Left" VerticalAlignment="Top" Margin="70"/>-->
     </Grid>
 </Window>
