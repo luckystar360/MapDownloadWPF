@@ -1,0 +1,92 @@
+﻿<Window x:Class="MapDownloader.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:MapDownloader.Views"
+        mc:Ignorable="d"
+        
+        xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+        TextElement.Foreground="{DynamicResource MaterialDesignBody}"
+         TextElement.FontWeight="Regular"
+         TextElement.FontSize="13"
+         TextOptions.TextFormattingMode="Ideal"
+         TextOptions.TextRenderingMode="Auto"
+         Background="{DynamicResource MaterialDesignPaper}"
+         FontFamily="{DynamicResource MaterialDesignFont}"
+        
+        Title="MainWindow" Height="450" Width="800">
+    <Grid>
+        
+        <materialDesign:DrawerHost
+            IsLeftDrawerOpen="{Binding ElementName=MenuToggleButton, Path=IsChecked}">
+            <DockPanel>
+                <materialDesign:ColorZone Mode="SecondaryMid" Padding="10" DockPanel.Dock="Top">
+                    <StackPanel Orientation="Horizontal">
+                        <ToggleButton
+                                x:Name="MenuToggleButton"
+                                Style="{StaticResource MaterialDesignHamburgerToggleButton}"
+                                IsChecked="False"
+                                Click="MenuToggleButton_OnClick"
+                                AutomationProperties.Name="HamburgerToggleButton"/>
+                        <TextBlock Margin="16 0 0 0" Text="UAV Map Caching" VerticalAlignment="Center" HorizontalAlignment="Center" />
+                    </StackPanel>
+                </materialDesign:ColorZone>
+                <local:MapView x:Name="mapView" Padding="0" DockPanel.Dock="Bottom"/>
+            </DockPanel>
+
+            <materialDesign:DrawerHost.LeftDrawerContent>
+                <DockPanel MinWidth="220" x:Name="DemoItemsSearchBox">
+                    <Grid DockPanel.Dock="Top">
+                        <TextBlock Text="Tile Server"  Margin="0,0,60,0" HorizontalAlignment="Center" VerticalAlignment="Center"
+                                   FontSize="20" FontWeight="ExtraBold"/>
+                        <ToggleButton 
+                        Style="{StaticResource MaterialDesignHamburgerToggleButton}" 
+                        Margin="10"
+                        IsChecked="{Binding ElementName=MenuToggleButton, Path=IsChecked, Mode=TwoWay}" HorizontalAlignment="Right"/>
+                      
+                    </Grid>
+                    
+                    <ListBox 
+                        x:Name="DemoItemsListBox" 
+                        Margin="0,0,0,16"
+                        SelectedIndex="{Binding SelectedTileLayerIndex}"
+                        SelectedItem="{Binding SelectedTileLayer, UpdateSourceTrigger=PropertyChanged}"
+                        ItemsSource="{Binding TileLayers}"
+                        PreviewMouseLeftButtonUp="UIElement_OnPreviewMouseLeftButtonUp"
+                        AutomationProperties.Name="DemoPagesListBox"
+                        >
+                        <ListBox.Resources>
+                            <Style TargetType="ScrollBar" BasedOn="{StaticResource MaterialDesignScrollBarMinimal}"/>
+                        </ListBox.Resources>
+                        <ListBox.ItemTemplate>
+                            <DataTemplate DataType="domain:DemoItem">
+                                <TextBlock Text="{Binding SourceName}" Margin="24 4 0 4" AutomationProperties.AutomationId="DemoItemPage"/>
+                            </DataTemplate>
+                        </ListBox.ItemTemplate>
+                        <ListBox.ItemContainerStyle>
+                            <Style TargetType="ListBoxItem">
+                                <EventSetter Event="MouseLeftButtonUp" Handler="ListViewItem_PreviewMouseLeftButtonDown" />
+                            </Style>
+                        </ListBox.ItemContainerStyle>
+                    </ListBox>
+
+                </DockPanel>
+            </materialDesign:DrawerHost.LeftDrawerContent>
+            
+        </materialDesign:DrawerHost>
+
+        <materialDesign:PopupBox Style="{StaticResource MaterialDesignMultiFloatingActionPopupBox}"
+            PlacementMode="TopAndAlignCentres" ToolTipService.Placement="Top" ToolTip="PopupBox, Style MaterialDesignMultiFloatingActionPopupBox"
+            Opened="PopupBox_OnOpened" Closed="PopupBox_OnClosed" IsEnabled="{Binding DataContext.ControlsEnabled, RelativeSource={RelativeSource FindAncestor, AncestorType=Window}}" HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="0,0,9,9">
+            <StackPanel>
+                <Button ToolTip="New Region" Content="{materialDesign:PackIcon Kind=OpenInNew, Size=25}" />
+                <Button ToolTip="Delete Region" Content="{materialDesign:PackIcon Kind=DeleteOutline, Size=25}"  />
+                <Button ToolTip="Save Region" Content="{materialDesign:PackIcon Kind=ContentSaveEditOutline, Size=25}"  />
+                <Button ToolTip="Download Map" Content="{materialDesign:PackIcon Kind=DownloadOutline, Size=25}"  />
+            </StackPanel>
+        </materialDesign:PopupBox>
+
+        <local:PolygonInfoPanel HorizontalAlignment="Right" VerticalAlignment="Top" Margin="5,60,5,5" Visibility="{Binding IsShowNewPolygonPanel}"/>
+    </Grid>
+</Window>
