@@ -17,6 +17,6 @@ namespace MapDownloader.Services.MapCache
         }
         ~ITileDownload() { }
 
-        public abstract ImageSource Download(Uri uri, string userAgent);
+        public abstract ImageSource Download(Uri uri, string userAgent=null);
     }
 }

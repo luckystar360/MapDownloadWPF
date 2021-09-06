@@ -34,5 +34,10 @@ namespace MapDownloader.Services.Commands
         {
             this.execute(parameter);
         }
+
+        public void RaiseCanExecuteChanged()
+        {
+            CommandManager.InvalidateRequerySuggested();
+        }
     }
 }

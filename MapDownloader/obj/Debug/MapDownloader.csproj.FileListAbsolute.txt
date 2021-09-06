@@ -225,3 +225,4 @@ D:\nhatdn1\MapDownloadWPF\MapDownloader\bin\Debug\ko\System.Windows.Interactivit
 D:\nhatdn1\MapDownloadWPF\MapDownloader\bin\Debug\ru\System.Windows.Interactivity.resources.dll
 D:\nhatdn1\MapDownloadWPF\MapDownloader\bin\Debug\zh-Hans\System.Windows.Interactivity.resources.dll
 D:\nhatdn1\MapDownloadWPF\MapDownloader\bin\Debug\zh-Hant\System.Windows.Interactivity.resources.dll
+D:\nhatdn1\MapDownloadWPF\MapDownloader\obj\Debug\MapDownloader.csprojResolveAssemblyReference.cache

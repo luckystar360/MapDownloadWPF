@@ -1,4 +1,5 @@
 ﻿using MapDownloader.Models;
+using MapDownloader.Services.MapCache;
 using MapDownloader.ViewModels;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -20,6 +21,8 @@ namespace MapDownloader
     {
         private readonly IHost host;
         public static IServiceProvider ServiceProvider { get; private set; }
+
+        private ITileDownload _mapDownload;
 
         public App()
         {
@@ -51,12 +54,14 @@ namespace MapDownloader
         {
             services.Configure<AppSettings>(configuration.GetSection(nameof(AppSettings)));
 
+            _mapDownload = new HttpTileDownload();
+            services.AddSingleton<ITileDownload>(_mapDownload);
             // Register all ViewModels.
             services.AddSingleton<MainViewModel>();
             services.AddSingleton<MapViewModel>();
 
             // Register all the Windows of the applications.
-            services.AddTransient<MainWindow>();
+            services.AddSingleton<MainWindow>();
         }
 
         protected override async void OnStartup(StartupEventArgs e)
