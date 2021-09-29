@@ -19,6 +19,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Threading;
@@ -106,10 +107,19 @@ namespace MapDownloader.ViewModels
         }
 
         private UserControl _rightPanelItem;
+        private UserControl _lastRightPanelItem;
         public UserControl RightPanelItem
         {
             get { return _rightPanelItem; }
-            set { SetProperty(ref _rightPanelItem, value); }
+            set { 
+                SetProperty(ref _rightPanelItem, value);
+                //LastRightPanelItem = value;
+            }
+        }
+        public UserControl LastRightPanelItem
+        {
+            get { return _lastRightPanelItem; }
+            set { SetProperty(ref _lastRightPanelItem, value); }
         }
 
         private string _mapName;
@@ -153,7 +163,15 @@ namespace MapDownloader.ViewModels
 
         public MainViewModel(IOptions<AppSettings> options)
         {
+            //load settings
             _settings = options.Value;
+            MapName = _settings.MapCacheNameDefault;
+            SignatureFile = _settings.MapCacheSignatureDefault;
+            ListLayerIndex = new ObservableCollection<int> { 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17 };
+            FromLayerIndex = 1;
+            ToLayerIndex = 2;
+            RightPanelItem = null;
+            LastRightPanelItem = null;
             ListRightPanels.Add("InfoPanel", new PolygonInfoPanel() as UserControl); //0
             ListRightPanels.Add("DownloadPanel", new DownloadPanel() as UserControl); //1
 
@@ -167,9 +185,6 @@ namespace MapDownloader.ViewModels
             }
             AppMode = AppMode.Normal;
 
-            ListLayerIndex = new ObservableCollection<int> { 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17 };
-            FromLayerIndex = 1;
-            ToLayerIndex = 2;
             //command register
             AddNewRegionCommand = new RelayCommand(HandleAppModeChanged, (obj) => { return AppMode != AppMode.NewPolygon; });
             DeleteRegionCommand = new RelayCommand(HandleAppModeChanged);
@@ -184,6 +199,7 @@ namespace MapDownloader.ViewModels
             _bgwDownloadMap.WorkerReportsProgress = true;
             _bgwDownloadMap.DoWork += _bgwDownloadMap_DoWork;
             _bgwDownloadMap.ProgressChanged += _bgwDownloadMap_ProgressChanged;
+            _bgwDownloadMap.RunWorkerCompleted += _bgwDownloadMap_RunWorkerCompleted;
 
             _updateLayoutTimer = new DispatcherTimer { Interval = TimeSpan.FromMilliseconds(100) };
             _updateLayoutTimer.Tick += (s, e) =>
@@ -193,11 +209,17 @@ namespace MapDownloader.ViewModels
             _updateLayoutTimer.Start();
         }
 
+        private void _bgwDownloadMap_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
+        {
+            IsDownloading = false;
+            CommandManager.InvalidateRequerySuggested();
+        }
+
 
         //download backgroundworker
         private void _bgwDownloadMap_ProgressChanged(object sender, ProgressChangedEventArgs e)
         {
-
+          
         }
 
         private long _totalFileDownload = 0;
@@ -223,7 +245,8 @@ namespace MapDownloader.ViewModels
                 int fromLayer = this.ListLayerIndex[this.FromLayerIndex];
                 int toLayer = this.ListLayerIndex[this.ToLayerIndex];
 
-
+                IsDownloading = true;
+                CommandManager.InvalidateRequerySuggested();
                 for (int z = fromLayer; z <= toLayer; z++)
                 {
                     double fromX, fromY, toX, toY;
@@ -286,8 +309,7 @@ namespace MapDownloader.ViewModels
             }
             finally
             {
-
-                
+            
             }
         }
 
@@ -322,6 +344,7 @@ namespace MapDownloader.ViewModels
             }
             finally
             {
+              
                 //cts.Dispose();
             }
 
@@ -359,7 +382,6 @@ namespace MapDownloader.ViewModels
         /// <param name="obj"></param>
         private void HandleDownloadCommand(object obj)
         {
-            IsDownloading = true;
             this._bgwDownloadMap.RunWorkerAsync();
         }
 
@@ -369,7 +391,7 @@ namespace MapDownloader.ViewModels
         private void HandleCancelDownloadCommand(object obj)
         {
             this._bgwDownloadMap.CancelAsync();
-            IsDownloading = false;
+           
         }
 
         public void UpdateSelectedMapSource()

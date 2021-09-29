@@ -13,5 +13,8 @@ namespace MapDownloader.Models
         public bool BooleanSetting { get; set; }
         public string MapProviderName { get; set; }
 
+        public string MapCacheNameDefault { get; set; }
+
+        public string MapCacheSignatureDefault { get; set; }
     }
 }

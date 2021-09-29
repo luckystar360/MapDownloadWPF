@@ -18,11 +18,21 @@
         
         Title="MainWindow" Height="450" Width="800">
     <Window.Resources>
-        <Storyboard x:Key="sbControlContent" AutoReverse="False">
+        <!--<Storyboard x:Key="sbShowBar" AutoReverse="False">
             <DoubleAnimation
                                 Storyboard.TargetName="rightContentControl"
                                 Storyboard.TargetProperty="Width"
-                                From="0" To="250" Duration="0:0:0.5" />
+                                From="250" To="0" BeginTime="0:0:0" Duration="0:0:0.5" />
+            <DoubleAnimation
+                                Storyboard.TargetName="rightContentControl"
+                                Storyboard.TargetProperty="Width"
+                                From="0" To="250" BeginTime="0:0:0.5" Duration="0:0:0.5" />
+        </Storyboard>-->
+        <Storyboard x:Key="sbShowBarInit" AutoReverse="False">
+            <DoubleAnimation
+                                Storyboard.TargetName="rightContentControl"
+                                Storyboard.TargetProperty="Width"
+                                From="0" To="250" BeginTime="0:0:0" Duration="0:0:0.5" />
         </Storyboard>
     </Window.Resources>
     <Grid>
@@ -113,10 +123,18 @@
                 </EventTrigger>-->
             <!--</ContentControl.Triggers>
         </ContentControl>-->
-        <ContentControl x:Name="rightContentControl" Content="{Binding RightPanelItem, NotifyOnTargetUpdated=True}" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="5,60,5,5">
+        <ContentControl x:Name="rightContentControl" Content="{Binding RightPanelItem, NotifyOnTargetUpdated=True}"
+                        HorizontalAlignment="Right" VerticalAlignment="Top" Margin="5,60,5,5" > 
             <i:Interaction.Triggers>
                 <i:EventTrigger EventName="TargetUpdated">
-                    <ei:ControlStoryboardAction Storyboard="{StaticResource sbControlContent}"/>
+                    <!--<i:Interaction.Behaviors>
+                        <ei:ConditionBehavior>
+                            <ei:ConditionalExpression>
+                                <ei:ComparisonCondition LeftOperand="{Binding LastRightPanelItem}" Operator="NotEqual" RightOperand="{x:Null}" />
+                            </ei:ConditionalExpression>
+                        </ei:ConditionBehavior>
+                    </i:Interaction.Behaviors>-->
+                    <ei:ControlStoryboardAction Storyboard="{StaticResource sbShowBarInit}" />
                 </i:EventTrigger>
             </i:Interaction.Triggers>
         </ContentControl>

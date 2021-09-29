@@ -19,13 +19,20 @@
                 <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.ToggleButton.xaml" />
             </ResourceDictionary.MergedDictionaries>
 
-            <SolidColorBrush x:Key="SecondaryHueLightBrush" Color="{StaticResource Primary100}"/>
+            <SolidColorBrush x:Key="SecondaryHueLightBrush" Color="#BB3333"/>
             <SolidColorBrush x:Key="SecondaryHueLightForegroundBrush" Color="{StaticResource Primary100Foreground}"/>
-            <SolidColorBrush x:Key="SecondaryHueMidBrush" Color="{StaticResource Primary500}"/>
+            <SolidColorBrush x:Key="SecondaryHueMidBrush" Color="#FF2222"/>
             <SolidColorBrush x:Key="SecondaryHueMidForegroundBrush" Color="{StaticResource Primary500Foreground}"/>
-            <SolidColorBrush x:Key="SecondaryHueDarkBrush" Color="{StaticResource Primary700}"/>
+            <SolidColorBrush x:Key="SecondaryHueDarkBrush" Color="Red"/>
             <SolidColorBrush x:Key="SecondaryHueDarkForegroundBrush" Color="{StaticResource Primary700Foreground}"/>
-            
+
+            <SolidColorBrush x:Key="PrimaryHueLightBrush" Color="#FF5555"/>
+            <SolidColorBrush x:Key="PrimaryHueLightForegroundBrush" Color="{StaticResource Primary100Foreground}"/>
+            <SolidColorBrush x:Key="PrimaryHueMidBrush" Color="#FF2222"/>
+            <SolidColorBrush x:Key="PrimaryHueMidForegroundBrush" Color="{StaticResource Primary500Foreground}"/>
+            <SolidColorBrush x:Key="PrimaryHueDarkBrush" Color="Red"/>
+            <SolidColorBrush x:Key="PrimaryHueDarkForegroundBrush" Color="{StaticResource Primary700Foreground}"/>
+
         </ResourceDictionary>
     </Application.Resources>
 </Application>
