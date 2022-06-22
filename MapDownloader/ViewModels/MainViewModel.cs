@@ -1,4 +1,5 @@
 ﻿using MapControl;
+using MapDownloader.Controls;
 using MapDownloader.Enums;
 using MapDownloader.Helpers;
 using MapDownloader.Models;
@@ -136,6 +137,13 @@ namespace MapDownloader.ViewModels
             set { SetProperty(ref _signatureFile, value); }
         }
 
+        private string _folderPath;
+        public string FolderPath
+        {
+            get { return _folderPath; }
+            set { SetProperty(ref _folderPath, value); }
+        }
+
         private int _fromLayerIndex;
         public int FromLayerIndex
         {
@@ -158,6 +166,7 @@ namespace MapDownloader.ViewModels
 
         public RelayCommand DownloadCommand { get; set; }
         public RelayCommand CancelDownloadCommand { get; set; }
+        public RelayCommand BrowserCommand { get; set; }
 
         private DispatcherTimer _updateLayoutTimer;
 
@@ -192,6 +201,7 @@ namespace MapDownloader.ViewModels
             DownloadRegionCommand = new RelayCommand(HandleAppModeChanged, (obj) => { return AppMode != AppMode.DownloadMap; });
             DownloadCommand = new RelayCommand(HandleDownloadCommand, (obj) => {return !_isDownloading;});
             CancelDownloadCommand = new RelayCommand(HandleCancelDownloadCommand, (obj) => { return _isDownloading; });
+            BrowserCommand = new RelayCommand(HandleBrowserCommand, (obj) => { return !_isDownloading; });
 
             //backgroundWorker downloadMap
             _bgwDownloadMap = new BackgroundWorker();
@@ -290,7 +300,7 @@ namespace MapDownloader.ViewModels
                                     url = _mapViewModel.MapResource.TileSource.GetUri(x, y, z);
                                 }));
 
-                                string imgName = string.Format("{0}-{1}-{2}.png", x, y, z);
+                                string imgName = string.Format("{0}-{1}-{2}-{3}.jpg", SignatureFile,z, x, y);
                                 _queueImageLinks.Add(new KeyValuePair<string, Uri>(imgName, url));
                                 if (_queueImageLinks.Count > 50 || _totalFileDownload - _fileDownloaded < 50)
                                 {
@@ -329,8 +339,20 @@ namespace MapDownloader.ViewModels
                         //lock (new object())
                         //{
                         string name = item.Key;
+                        string folderPath = Path.Combine(FolderPath, MapName);
+                        if (!Directory.Exists(folderPath))
+                            Directory.CreateDirectory(folderPath);
+                        string filePath = Path.Combine(folderPath, name);
                         Uri url = item.Value;
-                        ImageSource imageSource = _tileDownload.Download(url);
+                        ImageSource imageSource = _tileDownload.Download(url, "Mozilla/5.0");
+
+                        if (imageSource != null)
+                        {
+                            var encoder = new JpegBitmapEncoder();
+                            encoder.Frames.Add(BitmapFrame.Create((BitmapSource)imageSource));
+                            using (FileStream stream = new FileStream(filePath, FileMode.Create))
+                                encoder.Save(stream);
+                        }
                         _fileDownloaded++;
                         int percentDownloaded = _totalFileDownload > 0 ? (int)(_fileDownloaded * 100 / _totalFileDownload) : 0;
                         PercentDownloading = percentDownloaded;
@@ -382,6 +404,12 @@ namespace MapDownloader.ViewModels
         /// <param name="obj"></param>
         private void HandleDownloadCommand(object obj)
         {
+            if (this._mapViewModel.SelectedRegion == null)
+            {
+                MaterialMessageBox.ShowError(@"Please select region to download", false);
+                return;
+            }
+
             this._bgwDownloadMap.RunWorkerAsync();
         }
 
@@ -397,6 +425,16 @@ namespace MapDownloader.ViewModels
         public void UpdateSelectedMapSource()
         {
             _mapViewModel.MapResource = SelectedTileLayer;
+        }
+
+        private void HandleBrowserCommand(object obj)
+        {
+            System.Windows.Forms.FolderBrowserDialog openFileDlg = new System.Windows.Forms.FolderBrowserDialog();
+            var result = openFileDlg.ShowDialog();
+            if (result == System.Windows.Forms.DialogResult.OK)
+            {
+                FolderPath = openFileDlg.SelectedPath;
+            }
         }
     }
 }

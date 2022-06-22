@@ -205,3 +205,6 @@ D:\nhatdn1\MapDownloadWPF\MapDownloader\obj\Debug\Views\DownloadPanel.g.cs
 D:\nhatdn1\MapDownloadWPF\MapDownloader\obj\Debug\Views\DownloadPanel.baml
 D:\nhatdn1\MapDownloadWPF\MapDownloader\obj\Debug\MapDownloader.csproj.CoreCompileInputs.cache
 D:\nhatdn1\MapDownloadWPF\MapDownloader\obj\Debug\MapDownloader.csproj.CopyComplete
+D:\nhatdn1\MapDownloadWPF\MapDownloader\obj\Debug\Controls\MessageBoxWindow.baml
+D:\nhatdn1\MapDownloadWPF\MapDownloader\obj\Debug\Controls\MessageBoxWindow.g.cs
+D:\nhatdn1\MapDownloadWPF\MapDownloader\obj\Debug\MapDownloader.csproj.AssemblyReference.cache

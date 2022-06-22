@@ -24,6 +24,7 @@
                                 <RowDefinition/>
                                 <RowDefinition/>
                                 <RowDefinition/>
+                                <RowDefinition/>
                             </Grid.RowDefinitions>
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="Auto"/>
@@ -33,18 +34,30 @@
                             <TextBox ToolTip="Press MapFolder Name here" Text="{Binding MapName}"   Grid.Row="0" Grid.Column="1" Margin="10,0,0,0" />
                             <Label Content="Signature:" Grid.Row="1" Grid.Column="0" Padding ="5"/>
                             <TextBox ToolTip="Press signature of Map here&#x0a;Ex: esri_100-2" Text="{Binding SignatureFile}"  Grid.Row="1" Grid.Column="1" Margin="10,0,0,0" />
-                            <Label Content="From Layer:" Grid.Row="2" Grid.Column="0" Padding ="5"/>
+                            
+                            <Label Content="Save Folder:" Grid.Row="2" Grid.Column="0" Padding ="5"/>
+                            <Grid   Grid.Row="2" Grid.Column="1" Margin="10,0,0,0">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="20"/>
+                                </Grid.ColumnDefinitions>
+                                <TextBox Grid.Column="0" Text="{Binding FolderPath}"  IsReadOnly="True"/>
+                                <Button Grid.Column="1" Padding="0" Height="20" Background="Transparent" 
+                                        Foreground="Black" Command="{Binding BrowserCommand}">...</Button>
+                            </Grid>
+
+                            <Label Content="From Layer:" Grid.Row="3" Grid.Column="0" Padding ="5"/>
                             <ComboBox materialDesign:HintAssist.Hint="Min Layer" ItemsSource="{Binding ListLayerIndex}"
-                              Grid.Row="2" Grid.Column="1" Width="75" HorizontalAlignment="Left" Margin="10,0,0,0" SelectedIndex="{Binding FromLayerIndex}">
+                              Grid.Row="3" Grid.Column="1" Width="75" HorizontalAlignment="Left" Margin="10,0,0,0" SelectedIndex="{Binding FromLayerIndex}">
                                 <ComboBox.ItemsPanel>
                                     <ItemsPanelTemplate>
                                         <VirtualizingStackPanel />
                                     </ItemsPanelTemplate>
                                 </ComboBox.ItemsPanel>
                             </ComboBox>
-                            <Label Content="To Layer:" Grid.Row="3" Grid.Column="0" Padding ="5"/>
+                            <Label Content="To Layer:" Grid.Row="4" Grid.Column="0" Padding ="5"/>
                             <ComboBox materialDesign:HintAssist.Hint="Max Layer" ItemsSource="{Binding ListLayerIndex}"
-                              Grid.Row="3" Grid.Column="1" Width="75" HorizontalAlignment="Left" Margin="10,0,0,0" SelectedIndex="{Binding ToLayerIndex}">
+                              Grid.Row="4" Grid.Column="1" Width="75" HorizontalAlignment="Left" Margin="10,0,0,0" SelectedIndex="{Binding ToLayerIndex}">
                                 <ComboBox.ItemsPanel>
                                     <ItemsPanelTemplate>
                                         <VirtualizingStackPanel />

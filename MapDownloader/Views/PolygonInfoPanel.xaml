@@ -17,7 +17,7 @@
         <helpers:WGS84Converter x:Key="WGS84Converter"></helpers:WGS84Converter>
     </UserControl.Resources>
     <Grid Width="250" Height="300">
-        <GroupBox Header="New Polygon" Background="#99FFFFFF" Style="{DynamicResource MaterialDesignGroupBox}"
+        <GroupBox Header="New Region" Background="#99FFFFFF" Style="{DynamicResource MaterialDesignGroupBox}"
             Margin="0" materialDesign:ShadowAssist.ShadowDepth="Depth3">
             <Grid>
                 <StackPanel Orientation="Vertical">

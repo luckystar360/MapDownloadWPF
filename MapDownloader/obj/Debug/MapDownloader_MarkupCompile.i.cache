@@ -10,11 +10,11 @@ none
 false
 DEBUG;TRACE
 D:\nhatdn1\MapDownloadWPF\MapDownloader\App.xaml
-41266368152
+5-995123269
 
-26-96933728
-110696984481
-Views\DownloadPanel.xaml;Views\MainWindow.xaml;Views\MapView.xaml;Views\PolygonInfoPanel.xaml;
+251373797427
+1111121110387
+Controls\MessageBoxWindow.xaml;Views\DownloadPanel.xaml;Views\MainWindow.xaml;Views\MapView.xaml;Views\PolygonInfoPanel.xaml;
 
-False
+True
 

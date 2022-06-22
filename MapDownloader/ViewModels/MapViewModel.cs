@@ -83,8 +83,9 @@ namespace MapDownloader.ViewModels
         public bool IsMouseMoveEnable
         {
             get { return _isMouseMoveEnable; }
-            set {
-                SetProperty(ref _isMouseMoveEnable, value); 
+            set
+            {
+                SetProperty(ref _isMouseMoveEnable, value);
             }
         }
 
@@ -119,14 +120,20 @@ namespace MapDownloader.ViewModels
 
         public void UpdateSelectedPolygon(Location p1, Location p2)
         {
-            int selectedRegionId = Rectangles.IndexOf(SelectedRegion);
-                SelectedRegion = new Rectangle() { Name = "SelectedRegion",
-                    X1 = Math.Min(p1.Longitude, p2.Longitude), 
-                    Y1 = Math.Max(p1.Latitude, p2.Latitude),
-                    X2 = Math.Max(p1.Longitude, p2.Longitude),
-                    Y2 = Math.Min(p1.Latitude, p2.Latitude)
-                };
-            if (selectedRegionId > 0)
+            int selectedRegionId = -1;
+            if (SelectedRegion != null)
+                selectedRegionId = Rectangles.IndexOf(SelectedRegion);
+            SelectedRegion = new Rectangle()
+            {
+                Name = "SelectedRegion",
+                X1 = Math.Min(p1.Longitude, p2.Longitude),
+                Y1 = Math.Max(p1.Latitude, p2.Latitude),
+                X2 = Math.Max(p1.Longitude, p2.Longitude),
+                Y2 = Math.Min(p1.Latitude, p2.Latitude)
+            };
+
+
+            if (selectedRegionId > -1)
                 Rectangles[selectedRegionId] = SelectedRegion;
             else
                 Rectangles.Add(SelectedRegion);
@@ -135,8 +142,13 @@ namespace MapDownloader.ViewModels
 
         public void ClearSelectedPolygon()
         {
-            int selectedRegionId = Rectangles.IndexOf(SelectedRegion);
-            Rectangles[selectedRegionId] = null;
+            if (SelectedRegion != null)
+            {
+                int selectedRegionId = Rectangles.IndexOf(SelectedRegion);
+                if (selectedRegionId > -1)
+                    Rectangles[selectedRegionId] = null;
+                SelectedRegion = null;
+            }
         }
 
         public MapViewModel(IOptions<AppSettings> options)
@@ -147,17 +159,14 @@ namespace MapDownloader.ViewModels
             //MapResource = _serverTileLayer.TileLayers[2];
 
             //add sample polyline
-            List<Location> polyline = new List<Location>();
-            polyline.Add(new Location(21, 105));
-            polyline.Add(new Location(21.1, 105.1));
-            polyline.Add(new Location(21.3, 105.6));
-            Polylines = new ObservableCollection<Polyline>();
-            Polylines.Add(new Polyline { Name = "polyline1", Locations = new LocationCollection(polyline)});
+            //List<Location> polyline = new List<Location>();
+            //polyline.Add(new Location(21, 105));
+            //polyline.Add(new Location(21.1, 105.1));
+            //polyline.Add(new Location(21.3, 105.6));
+            //Polylines = new ObservableCollection<Polyline>();
+            //Polylines.Add(new Polyline { Name = "polyline1", Locations = new LocationCollection(polyline)});
 
-            //add sample rectangle
-            SelectedRegion = new Rectangle() {Name="SelectedRegion", X1 = 105, Y1 = 21.4, X2 = 105.2, Y2 = 21.0 };
             Rectangles = new ObservableCollection<Rectangle>();
-            Rectangles.Add(SelectedRegion);
 
         }
 
